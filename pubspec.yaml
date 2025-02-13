@@ -1,0 +1,30 @@
+name: mood_jar
+description: "A fun Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.0-70.0.dev
+
+dependencies:
+  animated_text_kit: ^4.2.3
+  build_runner: ^2.4.15
+  emoji_picker_flutter: ^4.3.0
+  flutter:
+    sdk: flutter
+  flutter_colorpicker: ^1.1.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  hive_generator: ^2.0.1
+  intl: ^0.20.2
+  path_provider: ^2.1.5
+  screenshot: ^3.0.0
+  share_plus: ^10.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
