@@ -2,8 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:animated_emoji/animated_emoji.dart';
+import '../widgets/mood_button.dart';
 import '../../../core/models/mood.dart';
 import 'package:intl/intl.dart';
+
+import '../widgets/mood_textfield.dart';
 
 class MoodLoggingScreen extends StatefulWidget {
   const MoodLoggingScreen({super.key});
@@ -24,22 +28,6 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
     super.dispose();
   }
 
-  Widget _moodButton(String moodName, String emoji) {
-    final isSelected = _selectedMood == moodName;
-
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          _selectedMood = moodName;
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.blue[100] : null,
-      ),
-      child: Text('$emoji $moodName'),
-    );
-  }
-
   void _saveMoodToHive(String moodName) async {
     final moodBox = Hive.box<Mood>('moods');
     final newMood = Mood(
@@ -48,7 +36,7 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
       note: _noteController.text,
     );
     await moodBox.add(newMood);
-    print('Mood saved to Hive: $moodName, Note: ${_noteController.text}');
+    // print('Mood saved to Hive: $moodName, Note: ${_noteController.text}');
 
     setState(() {
       _selectedMood = '';
@@ -72,48 +60,103 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
       body: Column(
         children: <Widget>[
           // Mood Input Section
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const Text(
-                  'How are you feeling today?',
-                  style: TextStyle(fontSize: 20),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _moodButton('Happy', '😊'),
-                    _moodButton('Neutral', '😐'),
-                    _moodButton('Sad', '😞'),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _noteController,
-                  decoration: const InputDecoration(
-                    labelText: 'Add a note (optional)',
-                    border: OutlineInputBorder(),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'How are you feeling today?',
+                    style: TextStyle(fontSize: 20),
                   ),
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed:
-                      _selectedMood.isNotEmpty
-                          ? () {
-                            _saveMoodToHive(_selectedMood);
-                          }
-                          : null,
-                  child: const Text('Save Mood'),
-                ),
-              ],
+                  const SizedBox(height: 40),
+                  SizedBox(
+                    height: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        MoodButton(
+                          moodName: 'Happy',
+                          emojiData: AnimatedEmojis.smile,
+                          isSelected: _selectedMood == 'Happy',
+                          onPressed: () {
+                            setState(() {
+                              _selectedMood = 'Happy';
+                            });
+                          },
+                        ),
+                        MoodButton(
+                          moodName: 'Neutral',
+                          emojiData: AnimatedEmojis.neutralFace,
+                          isSelected: _selectedMood == 'Neutral',
+                          onPressed: () {
+                            setState(() {
+                              _selectedMood = 'Neutral';
+                            });
+                          },
+                        ),
+                        MoodButton(
+                          moodName: 'Sad',
+                          emojiData: AnimatedEmojis.sad,
+                          isSelected: _selectedMood == 'Sad',
+                          onPressed: () {
+                            setState(() {
+                              _selectedMood = 'Sad';
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  MoodTextField(noteController: _noteController),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                        _selectedMood.isNotEmpty
+                            ? Colors.deepPurpleAccent
+                            : Colors.grey,
+                      ),
+                      foregroundColor: WidgetStatePropertyAll(
+                        _selectedMood.isNotEmpty
+                            ? Colors.white
+                            : Colors.blueGrey,
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: const BorderSide(
+                            width: 2.0,
+                            color: Colors.lightBlueAccent,
+                          ),
+                        ),
+                      ),
+                      padding: WidgetStatePropertyAll(
+                        const EdgeInsets.symmetric(
+                          horizontal: 100,
+                          vertical: 25,
+                        ),
+                      ),
+                    ),
+                    onPressed:
+                        _selectedMood.isNotEmpty
+                            ? () {
+                              _saveMoodToHive(_selectedMood);
+                            }
+                            : null,
+                    child: const Text('Save Mood'),
+                  ),
+                ],
+              ),
             ),
           ),
 
           // Mood History Section
           Expanded(
+            flex: 1,
             child: ValueListenableBuilder(
               valueListenable: Hive.box<Mood>('moods').listenable(),
               builder: (context, Box<Mood> box, _) {
