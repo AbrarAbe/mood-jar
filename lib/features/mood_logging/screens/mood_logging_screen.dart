@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animated_emoji/animated_emoji.dart';
+import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/mood_button.dart';
 import '../../../core/models/mood.dart';
-import 'package:intl/intl.dart';
 
 import '../widgets/mood_textfield.dart';
 
@@ -69,7 +70,13 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                 children: [
                   Text(
                     'How are you feeling today?',
-                    style: TextStyle(fontSize: 20),
+                    style: GoogleFonts.lato(
+                      textStyle: TextStyle(
+                        // color: Colors.blue,
+                        fontSize: 50,
+                        letterSpacing: .5,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 40),
                   SizedBox(
