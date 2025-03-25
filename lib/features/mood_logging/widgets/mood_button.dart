@@ -1,5 +1,6 @@
 import 'package:animated_emoji/animated_emoji.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MoodButton extends StatelessWidget {
   final String moodName;
@@ -17,15 +18,30 @@ class MoodButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(50),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        width: isSelected ? 72 : 54,
-        height: isSelected ? 72 : 54,
-        child: AnimatedEmoji(emojiData, size: isSelected ? 72 : 54),
-      ),
+    return Column(
+      spacing: 10,
+      children: [
+        InkWell(
+          enableFeedback: true,
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(50),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: isSelected ? 72 : 54,
+            height: isSelected ? 72 : 54,
+            child: AnimatedEmoji(emojiData, size: isSelected ? 72 : 54),
+          ),
+        ),
+        Text(
+          moodName,
+          style: GoogleFonts.lexend(
+            textStyle: TextStyle(
+              fontSize: isSelected ? 20 : 16,
+              // letterSpacing: .5,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

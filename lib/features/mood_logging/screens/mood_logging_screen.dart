@@ -37,8 +37,6 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
       note: _noteController.text,
     );
     await moodBox.add(newMood);
-    // print('Mood saved to Hive: $moodName, Note: ${_noteController.text}');
-
     setState(() {
       _selectedMood = '';
       _noteController.clear();
@@ -58,31 +56,31 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Log Your Mood')),
-      body: Column(
-        children: <Widget>[
-          // Mood Input Section
-          Expanded(
-            flex: 2,
-            child: Padding(
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            // Mood Input Section
+            Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'How are you feeling today?',
-                    style: GoogleFonts.lato(
-                      textStyle: TextStyle(
-                        // color: Colors.blue,
-                        fontSize: 50,
+                    style: GoogleFonts.lexend(
+                      textStyle: const TextStyle(
+                        fontSize: 40,
                         letterSpacing: .5,
                       ),
                     ),
                   ),
                   const SizedBox(height: 40),
                   SizedBox(
-                    height: 100,
+                    height: 120,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         MoodButton(
                           moodName: 'Happy',
@@ -128,24 +126,22 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                             : Colors.grey,
                       ),
                       foregroundColor: WidgetStatePropertyAll(
-                        _selectedMood.isNotEmpty
-                            ? Colors.white
-                            : Colors.blueGrey,
+                        _selectedMood.isNotEmpty ? Colors.white : Colors.white,
                       ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
-                          side: const BorderSide(
+                          side: BorderSide(
                             width: 2.0,
-                            color: Colors.lightBlueAccent,
+                            color:
+                                _selectedMood.isNotEmpty
+                                    ? Colors.lightBlueAccent
+                                    : Colors.grey,
                           ),
                         ),
                       ),
-                      padding: WidgetStatePropertyAll(
-                        const EdgeInsets.symmetric(
-                          horizontal: 100,
-                          vertical: 25,
-                        ),
+                      padding: const WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 100, vertical: 25),
                       ),
                     ),
                     onPressed:
@@ -159,66 +155,66 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                 ],
               ),
             ),
-          ),
 
-          // Mood History Section
-          Expanded(
-            flex: 1,
-            child: ValueListenableBuilder(
-              valueListenable: Hive.box<Mood>('moods').listenable(),
-              builder: (context, Box<Mood> box, _) {
-                // Filter the moods based on selected dates
-                List<Mood> filteredMoods =
-                    box.values.toList(); // Start with all moods
-                if (_startDate != null) {
-                  filteredMoods =
-                      filteredMoods
-                          .where((mood) => mood.timestamp.isAfter(_startDate!))
-                          .toList();
-                }
-                if (_endDate != null) {
-                  // We add one day to include the entire end date.
-                  DateTime endDateInclusive = _endDate!.add(
-                    const Duration(days: 1),
-                  );
-                  filteredMoods =
-                      filteredMoods
-                          .where(
-                            (mood) => mood.timestamp.isBefore(endDateInclusive),
-                          )
-                          .toList();
-                }
-
-                if (filteredMoods.isEmpty) {
-                  return const Center(
-                    child: Text('No moods logged for the selected dates.'),
-                  );
-                }
-
-                return ListView.builder(
-                  itemCount: filteredMoods.length, // Use filteredMoods
-                  itemBuilder: (context, index) {
-                    final mood = filteredMoods[index]; // Use filteredMoods
-                    return ListTile(
-                      title: Text(
-                        '${mood.mood} - ${DateFormat.yMd().add_jms().format(mood.timestamp)}',
-                      ), //Improved date display
-                      subtitle: Text(mood.note ?? ''),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          _deleteMood(
-                            box.keyAt(box.values.toList().indexOf(mood)),
-                          ); //find box key from filtered mood list
-                        },
-                      ),
+            // Mood History Section
+            GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: ValueListenableBuilder(
+                valueListenable: Hive.box<Mood>('moods').listenable(),
+                builder: (context, Box<Mood> box, _) {
+                  List<Mood> filteredMoods = box.values.toList();
+                  if (_startDate != null) {
+                    filteredMoods =
+                        filteredMoods
+                            .where(
+                              (mood) => mood.timestamp.isAfter(_startDate!),
+                            )
+                            .toList();
+                  }
+                  if (_endDate != null) {
+                    DateTime endDateInclusive = _endDate!.add(
+                      const Duration(days: 1),
                     );
-                  },
-                );
-              },
+                    filteredMoods =
+                        filteredMoods
+                            .where(
+                              (mood) =>
+                                  mood.timestamp.isBefore(endDateInclusive),
+                            )
+                            .toList();
+                  }
+
+                  if (filteredMoods.isEmpty) {
+                    return const Center(
+                      child: Text('No moods logged for the selected dates.'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: filteredMoods.length,
+                    itemBuilder: (context, index) {
+                      final mood = filteredMoods[index];
+                      return ListTile(
+                        title: Text(
+                          '${mood.mood} - ${DateFormat.yMd().add_jms().format(mood.timestamp)}',
+                        ),
+                        subtitle: Text(mood.note ?? ''),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            _deleteMood(
+                              box.keyAt(box.values.toList().indexOf(mood)),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
