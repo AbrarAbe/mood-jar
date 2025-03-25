@@ -56,182 +56,171 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Log Your Mood')),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          spacing: 10,
-          children: [
-            // Mood Input Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'How are you feeling today?',
+      body: Container(
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'How are you feeling today?',
+                  style: GoogleFonts.lexend(
+                    textStyle: const TextStyle(fontSize: 40, letterSpacing: .5),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                SizedBox(
+                  height: 120,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      MoodButton(
+                        moodName: 'Happy',
+                        emojiData: AnimatedEmojis.smile,
+                        isSelected: _selectedMood == 'Happy',
+                        onPressed: () {
+                          setState(() {
+                            _selectedMood = 'Happy';
+                          });
+                        },
+                      ),
+                      MoodButton(
+                        moodName: 'Neutral',
+                        emojiData: AnimatedEmojis.neutralFace,
+                        isSelected: _selectedMood == 'Neutral',
+                        onPressed: () {
+                          setState(() {
+                            _selectedMood = 'Neutral';
+                          });
+                        },
+                      ),
+                      MoodButton(
+                        moodName: 'Sad',
+                        emojiData: AnimatedEmojis.sad,
+                        isSelected: _selectedMood == 'Sad',
+                        onPressed: () {
+                          setState(() {
+                            _selectedMood = 'Sad';
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 40),
+                MoodTextField(
+                  noteController: _noteController,
+                  labelText:
+                      _selectedMood.isNotEmpty
+                          ? "What made you feel $_selectedMood today?"
+                          : "Select a mood to tell your story",
+                  labelStyle: GoogleFonts.lexend(
+                    textStyle: const TextStyle(fontSize: 25, letterSpacing: .5),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      _selectedMood.isNotEmpty
+                          ? Colors.deepPurpleAccent
+                          : Colors.grey,
+                    ),
+                    foregroundColor: WidgetStatePropertyAll(
+                      _selectedMood.isNotEmpty ? Colors.white : Colors.white,
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(
+                          width: 2.0,
+                          color:
+                              _selectedMood.isNotEmpty
+                                  ? Colors.lightBlueAccent
+                                  : Colors.grey,
+                        ),
+                      ),
+                    ),
+                    padding: const WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 100, vertical: 25),
+                    ),
+                  ),
+                  onPressed:
+                      _selectedMood.isNotEmpty
+                          ? () {
+                            _saveMoodToHive(_selectedMood);
+                          }
+                          : null,
+                  child: Text(
+                    'Save Mood',
                     style: GoogleFonts.lexend(
-                      textStyle: const TextStyle(
-                        fontSize: 40,
-                        letterSpacing: .5,
-                      ),
+                      textStyle: const TextStyle(fontSize: 18),
                     ),
                   ),
-                  const SizedBox(height: 40),
-                  SizedBox(
-                    height: 120,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        MoodButton(
-                          moodName: 'Happy',
-                          emojiData: AnimatedEmojis.smile,
-                          isSelected: _selectedMood == 'Happy',
-                          onPressed: () {
-                            setState(() {
-                              _selectedMood = 'Happy';
-                            });
-                          },
-                        ),
-                        MoodButton(
-                          moodName: 'Neutral',
-                          emojiData: AnimatedEmojis.neutralFace,
-                          isSelected: _selectedMood == 'Neutral',
-                          onPressed: () {
-                            setState(() {
-                              _selectedMood = 'Neutral';
-                            });
-                          },
-                        ),
-                        MoodButton(
-                          moodName: 'Sad',
-                          emojiData: AnimatedEmojis.sad,
-                          isSelected: _selectedMood == 'Sad',
-                          onPressed: () {
-                            setState(() {
-                              _selectedMood = 'Sad';
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  MoodTextField(
-                    noteController: _noteController,
-                    labelText:
-                        _selectedMood.isNotEmpty
-                            ? "What made you feel $_selectedMood today?"
-                            : "Select a mood to tell your story",
-                    labelStyle: GoogleFonts.lexend(
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        letterSpacing: .5,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(
-                        _selectedMood.isNotEmpty
-                            ? Colors.deepPurpleAccent
-                            : Colors.grey,
-                      ),
-                      foregroundColor: WidgetStatePropertyAll(
-                        _selectedMood.isNotEmpty ? Colors.white : Colors.white,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: BorderSide(
-                            width: 2.0,
-                            color:
-                                _selectedMood.isNotEmpty
-                                    ? Colors.lightBlueAccent
-                                    : Colors.grey,
-                          ),
-                        ),
-                      ),
-                      padding: const WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 100, vertical: 25),
-                      ),
-                    ),
-                    onPressed:
-                        _selectedMood.isNotEmpty
-                            ? () {
-                              _saveMoodToHive(_selectedMood);
-                            }
-                            : null,
-                    child: Text(
-                      'Save Mood',
-                      style: GoogleFonts.lexend(
-                        textStyle: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 50),
+                // GestureDetector(
+                //   onTap: () => FocusScope.of(context).unfocus(),
+                //   child: ValueListenableBuilder(
+                //     valueListenable: Hive.box<Mood>('moods').listenable(),
+                //     builder: (context, Box<Mood> box, _) {
+                //       List<Mood> filteredMoods = box.values.toList();
+                //       if (_startDate != null) {
+                //         filteredMoods =
+                //             filteredMoods
+                //                 .where(
+                //                   (mood) => mood.timestamp.isAfter(_startDate!),
+                //                 )
+                //                 .toList();
+                //       }
+                //       if (_endDate != null) {
+                //         DateTime endDateInclusive = _endDate!.add(
+                //           const Duration(days: 1),
+                //         );
+                //         filteredMoods =
+                //             filteredMoods
+                //                 .where(
+                //                   (mood) =>
+                //                       mood.timestamp.isBefore(endDateInclusive),
+                //                 )
+                //                 .toList();
+                //       }
+
+                //       if (filteredMoods.isEmpty) {
+                //         return const Center(
+                //           child: Text('No moods logged for the selected dates.'),
+                //         );
+                //       }
+
+                //       return ListView.builder(
+                //         itemCount: filteredMoods.length,
+                //         itemBuilder: (context, index) {
+                //           final mood = filteredMoods[index];
+                //           return ListTile(
+                //             title: Text(
+                //               '${mood.mood} - ${DateFormat.yMd().add_jms().format(mood.timestamp)}',
+                //             ),
+                //             subtitle: Text(mood.note ?? ''),
+                //             trailing: IconButton(
+                //               icon: const Icon(Icons.delete),
+                //               onPressed: () {
+                //                 _deleteMood(
+                //                   box.keyAt(box.values.toList().indexOf(mood)),
+                //                 );
+                //               },
+                //             ),
+                //           );
+                //         },
+                //       );
+                //     },
+                //   ),
+                // ),
+              ],
             ),
-
-            // Mood History Section
-            GestureDetector(
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: ValueListenableBuilder(
-                valueListenable: Hive.box<Mood>('moods').listenable(),
-                builder: (context, Box<Mood> box, _) {
-                  List<Mood> filteredMoods = box.values.toList();
-                  if (_startDate != null) {
-                    filteredMoods =
-                        filteredMoods
-                            .where(
-                              (mood) => mood.timestamp.isAfter(_startDate!),
-                            )
-                            .toList();
-                  }
-                  if (_endDate != null) {
-                    DateTime endDateInclusive = _endDate!.add(
-                      const Duration(days: 1),
-                    );
-                    filteredMoods =
-                        filteredMoods
-                            .where(
-                              (mood) =>
-                                  mood.timestamp.isBefore(endDateInclusive),
-                            )
-                            .toList();
-                  }
-
-                  if (filteredMoods.isEmpty) {
-                    return const Center(
-                      child: Text('No moods logged for the selected dates.'),
-                    );
-                  }
-
-                  return ListView.builder(
-                    itemCount: filteredMoods.length,
-                    itemBuilder: (context, index) {
-                      final mood = filteredMoods[index];
-                      return ListTile(
-                        title: Text(
-                          '${mood.mood} - ${DateFormat.yMd().add_jms().format(mood.timestamp)}',
-                        ),
-                        subtitle: Text(mood.note ?? ''),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            _deleteMood(
-                              box.keyAt(box.values.toList().indexOf(mood)),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
