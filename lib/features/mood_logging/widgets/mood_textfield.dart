@@ -1,8 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MoodTextField extends StatelessWidget {
-  const MoodTextField({
+  String? labelText;
+  TextStyle? labelStyle;
+  MoodTextField({
     super.key,
+    this.labelText,
+    this.labelStyle,
     required TextEditingController noteController,
   }) : _noteController = noteController;
 
@@ -11,12 +18,17 @@ class MoodTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      minLines: 3,
+      maxLines: 10,
+      style: GoogleFonts.lexend(textStyle: const TextStyle(letterSpacing: .2)),
       controller: _noteController,
-      decoration: const InputDecoration(
-        labelText: 'Add a note (optional)',
-        border: OutlineInputBorder(),
+      decoration: InputDecoration(
+        labelText: labelText,
+        floatingLabelStyle: labelStyle,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        ),
       ),
-      maxLines: 3,
     );
   }
 }

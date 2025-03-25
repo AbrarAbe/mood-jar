@@ -59,6 +59,7 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
+          spacing: 10,
           children: [
             // Mood Input Section
             Padding(
@@ -116,7 +117,19 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  MoodTextField(noteController: _noteController),
+                  MoodTextField(
+                    noteController: _noteController,
+                    labelText:
+                        _selectedMood.isNotEmpty
+                            ? "What made you feel $_selectedMood today?"
+                            : "Select a mood to tell your story",
+                    labelStyle: GoogleFonts.lexend(
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                        letterSpacing: .5,
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ButtonStyle(
@@ -150,7 +163,12 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                               _saveMoodToHive(_selectedMood);
                             }
                             : null,
-                    child: const Text('Save Mood'),
+                    child: Text(
+                      'Save Mood',
+                      style: GoogleFonts.lexend(
+                        textStyle: const TextStyle(fontSize: 18),
+                      ),
+                    ),
                   ),
                 ],
               ),
