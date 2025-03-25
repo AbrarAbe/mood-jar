@@ -55,7 +55,7 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Log Your Mood')),
+      appBar: AppBar(title: Text('Mood Jar', style: GoogleFonts.lexend())),
       body: Container(
         alignment: Alignment.center,
         child: SingleChildScrollView(
