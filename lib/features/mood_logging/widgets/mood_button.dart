@@ -28,15 +28,15 @@ class MoodButton extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             width: isSelected ? 72 : 54,
-            height: isSelected ? 72 : 54,
-            child: AnimatedEmoji(emojiData, size: isSelected ? 72 : 54),
+            height: isSelected ? 70 : 52,
+            child: AnimatedEmoji(emojiData, size: isSelected ? 82 : 64),
           ),
         ),
         Text(
           moodName,
           style: GoogleFonts.lexend(
             textStyle: TextStyle(
-              fontSize: isSelected ? 20 : 16,
+              fontSize: isSelected ? 22 : 16,
               // letterSpacing: .5,
             ),
           ),
