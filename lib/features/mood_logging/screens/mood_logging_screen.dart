@@ -2,12 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:animated_emoji/animated_emoji.dart';
-import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/mood_button.dart';
 import '../../../core/models/mood.dart';
 
+import '../widgets/mood_slider.dart';
 import '../widgets/mood_textfield.dart';
 
 class MoodLoggingScreen extends StatefulWidget {
@@ -19,9 +17,8 @@ class MoodLoggingScreen extends StatefulWidget {
 
 class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
   String _selectedMood = '';
+  Color? _moodColor;
   final TextEditingController _noteController = TextEditingController();
-  DateTime? _startDate;
-  DateTime? _endDate;
 
   @override
   void dispose() {
@@ -39,17 +36,13 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
     await moodBox.add(newMood);
     setState(() {
       _selectedMood = '';
+      _moodColor;
       _noteController.clear();
     });
 
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Mood saved!')));
-  }
-
-  void _deleteMood(int index) async {
-    final moodBox = Hive.box<Mood>('moods');
-    await moodBox.deleteAt(index);
   }
 
   @override
@@ -65,50 +58,36 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'How are you feeling today?',
+                  'How are you feelings today?',
                   style: GoogleFonts.lexend(
                     textStyle: const TextStyle(fontSize: 40, letterSpacing: .5),
                   ),
                 ),
                 const SizedBox(height: 40),
-                SizedBox(
-                  height: 120,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      MoodButton(
-                        moodName: 'Happy',
-                        emojiData: AnimatedEmojis.smile,
-                        isSelected: _selectedMood == 'Happy',
-                        onPressed: () {
-                          setState(() {
-                            _selectedMood = 'Happy';
-                          });
-                        },
-                      ),
-                      MoodButton(
-                        moodName: 'Neutral',
-                        emojiData: AnimatedEmojis.neutralFace,
-                        isSelected: _selectedMood == 'Neutral',
-                        onPressed: () {
-                          setState(() {
-                            _selectedMood = 'Neutral';
-                          });
-                        },
-                      ),
-                      MoodButton(
-                        moodName: 'Sad',
-                        emojiData: AnimatedEmojis.sad,
-                        isSelected: _selectedMood == 'Sad',
-                        onPressed: () {
-                          setState(() {
-                            _selectedMood = 'Sad';
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                MoodSlider(
+                  options: ['Angry', 'Sad', 'Okay', 'Good', 'Great'],
+                  onChange: (value) {
+                    setState(() {
+                      if (value == 0) {
+                        _selectedMood = 'Angry';
+                        _moodColor = Colors.red;
+                      } else if (value == 1) {
+                        _selectedMood = 'Sad';
+                        _moodColor = Colors.orangeAccent.shade200;
+                      } else if (value == 2) {
+                        _selectedMood = 'Okay';
+                        _moodColor = Colors.deepPurpleAccent;
+                      } else if (value == 3) {
+                        _selectedMood = 'Good';
+                        _moodColor = Colors.deepPurpleAccent;
+                      } else if (value == 4) {
+                        _selectedMood = 'Great';
+                        _moodColor = Colors.deepPurpleAccent;
+                      } else {
+                        _selectedMood = '';
+                      }
+                    });
+                  },
                 ),
                 const SizedBox(height: 40),
                 MoodTextField(
@@ -119,15 +98,15 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                           : "Select a mood to tell your story",
                   labelStyle: GoogleFonts.lexend(
                     textStyle: const TextStyle(fontSize: 25, letterSpacing: .5),
+                    color: _moodColor,
                   ),
+                  borderColor: _moodColor,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(
-                      _selectedMood.isNotEmpty
-                          ? Colors.deepPurpleAccent
-                          : Colors.grey,
+                      _selectedMood.isNotEmpty ? _moodColor : Colors.grey,
                     ),
                     foregroundColor: WidgetStatePropertyAll(
                       _selectedMood.isNotEmpty ? Colors.white : Colors.white,
@@ -162,62 +141,6 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                   ),
                 ),
                 const SizedBox(height: 50),
-                // GestureDetector(
-                //   onTap: () => FocusScope.of(context).unfocus(),
-                //   child: ValueListenableBuilder(
-                //     valueListenable: Hive.box<Mood>('moods').listenable(),
-                //     builder: (context, Box<Mood> box, _) {
-                //       List<Mood> filteredMoods = box.values.toList();
-                //       if (_startDate != null) {
-                //         filteredMoods =
-                //             filteredMoods
-                //                 .where(
-                //                   (mood) => mood.timestamp.isAfter(_startDate!),
-                //                 )
-                //                 .toList();
-                //       }
-                //       if (_endDate != null) {
-                //         DateTime endDateInclusive = _endDate!.add(
-                //           const Duration(days: 1),
-                //         );
-                //         filteredMoods =
-                //             filteredMoods
-                //                 .where(
-                //                   (mood) =>
-                //                       mood.timestamp.isBefore(endDateInclusive),
-                //                 )
-                //                 .toList();
-                //       }
-
-                //       if (filteredMoods.isEmpty) {
-                //         return const Center(
-                //           child: Text('No moods logged for the selected dates.'),
-                //         );
-                //       }
-
-                //       return ListView.builder(
-                //         itemCount: filteredMoods.length,
-                //         itemBuilder: (context, index) {
-                //           final mood = filteredMoods[index];
-                //           return ListTile(
-                //             title: Text(
-                //               '${mood.mood} - ${DateFormat.yMd().add_jms().format(mood.timestamp)}',
-                //             ),
-                //             subtitle: Text(mood.note ?? ''),
-                //             trailing: IconButton(
-                //               icon: const Icon(Icons.delete),
-                //               onPressed: () {
-                //                 _deleteMood(
-                //                   box.keyAt(box.values.toList().indexOf(mood)),
-                //                 );
-                //               },
-                //             ),
-                //           );
-                //         },
-                //       );
-                //     },
-                //   ),
-                // ),
               ],
             ),
           ),
