@@ -4,22 +4,18 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.8.0-70.0.dev
+  sdk: ^3.7.2
 
 dependencies:
-  animated_emoji: ^3.1.0
-  animated_text_kit: ^4.2.3
-  build_runner: ^2.4.15
-  emoji_picker_flutter: ^4.3.0
   flutter:
     sdk: flutter
-  flutter_colorpicker: ^1.1.0
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hive_generator: ^2.0.1
   intl: ^0.20.2
   path_provider: ^2.1.5
+  reviews_slider: ^2.0.0
   screenshot: ^3.0.0
   share_plus: ^10.1.4
 
