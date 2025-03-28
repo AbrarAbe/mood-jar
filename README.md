@@ -11,11 +11,11 @@ This project is built with Flutter, utilizing Hive for local data storage to kee
 Here's a list of features currently planned for the Mood Jar app:
 
 *   **Core Mood Logging:**
-    *   [ ]  Basic UI to select a mood (e.g., happy, sad, neutral, angry, etc.).
-    *   [ ]  Option to add a short note or journal entry with each mood log.
-    *   [ ]  Visual mood icons/emojis for better representation.
-    *   [ ]  Date and time stamping for each mood entry.
-    *   [ ]  Implement Hive for local storage of mood data.
+    *   [x]  Basic UI to select a mood (e.g., happy, sad, neutral, angry, etc.).
+    *   [x]  Option to add a short note or journal entry with each mood log.
+    *   [x]  Visual mood icons/emojis for better representation.
+    *   [x]  Date and time stamping for each mood entry.
+    *   [x]  Implement Hive for local storage of mood data.
 
 *   **Mood History & Visualization:**
     *   [ ]  Display mood history in a list view, sorted by date.
@@ -23,7 +23,7 @@ Here's a list of features currently planned for the Mood Jar app:
     *   [ ]  Basic charts or graphs to show mood trends (e.g., line graph of average mood over time).
 
 *   **User Experience & Polish:**
-    *   [ ]  Clean and intuitive user interface design.
+    *   [x]  Clean and intuitive user interface design.
     *   [ ]  Smooth animations and transitions.
     *   [ ]  Potentially add themes (light/dark mode).
 
