@@ -20,7 +20,6 @@ class MoodHistoryScreen extends StatelessWidget {
           style: GoogleFonts.lexend(color: Colors.white),
         ),
         backgroundColor: Color(0xFF328E6E),
-        // Set the icon theme to change the color of icons in the AppBar
       ),
       backgroundColor: Color(0xFF328E6E),
       body: Column(

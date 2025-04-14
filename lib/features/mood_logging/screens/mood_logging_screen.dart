@@ -64,6 +64,7 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
+                Navigator.pushNamed(context, '/mood_history');
               },
               child: Text(
                 "OK",
