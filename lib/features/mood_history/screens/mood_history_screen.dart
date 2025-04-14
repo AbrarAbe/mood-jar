@@ -11,7 +11,18 @@ class MoodHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mood History', style: GoogleFonts.lexend())),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set the leading icon color to white
+        ),
+        title: Text(
+          'Mood History',
+          style: GoogleFonts.lexend(color: Colors.white),
+        ),
+        backgroundColor: Color(0xFF328E6E),
+        // Set the icon theme to change the color of icons in the AppBar
+      ),
+      backgroundColor: Color(0xFF328E6E),
       body: Column(
         spacing: 15,
         children: [
@@ -19,6 +30,7 @@ class MoodHistoryScreen extends StatelessWidget {
           Text(
             "Your Mood History",
             style: GoogleFonts.lexend(
+              color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -27,7 +39,7 @@ class MoodHistoryScreen extends StatelessWidget {
             'Your journey through emotions ✨',
             style: GoogleFonts.lexend(
               fontSize: 18,
-              color: Colors.grey.shade500,
+              color: Color.fromARGB(255, 217, 229, 213),
             ),
           ),
           const SizedBox(height: 30),
@@ -36,7 +48,15 @@ class MoodHistoryScreen extends StatelessWidget {
               valueListenable: Hive.box<Mood>('moods').listenable(),
               builder: (context, Box<Mood> box, _) {
                 if (box.isEmpty) {
-                  return const Center(child: Text('No moods added yet!'));
+                  return Center(
+                    child: Text(
+                      'No moods added yet!',
+                      style: GoogleFonts.lexend(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  );
                 } else {
                   List<Mood> moods = box.values.toList();
                   moods.sort((b, a) => a.timestamp.compareTo(b.timestamp));
@@ -44,7 +64,10 @@ class MoodHistoryScreen extends StatelessWidget {
                     itemCount: moods.length,
                     itemBuilder: (context, index) {
                       final mood = moods[index];
-                      return MoodHistoryCard(mood: mood);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: MoodHistoryCard(mood: mood),
+                      );
                     },
                   );
                 }

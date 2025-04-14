@@ -5,9 +5,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/models/mood.dart';
 
+import '../../widgets/mood_appbar.dart';
 import '../widgets/mood_slider.dart';
 import '../widgets/mood_textfield.dart';
-import '../widgets/mood_view_button.dart';
 
 class MoodLoggingScreen extends StatefulWidget {
   const MoodLoggingScreen({super.key});
@@ -19,6 +19,7 @@ class MoodLoggingScreen extends StatefulWidget {
 class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
   String _selectedMood = '';
   Color? _moodColor;
+  Color _moodLabelColor = Color(0xFF90C67C);
   final TextEditingController _noteController = TextEditingController();
 
   @override
@@ -41,22 +42,49 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
       _noteController.clear();
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Mood saved!')));
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Mood Saved!",
+            style: GoogleFonts.lexend(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            "Your mood has been successfully saved to the jar.",
+            style: GoogleFonts.lexend(),
+          ),
+          actions: [
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Color(0xFF328E6E)),
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "OK",
+                style: GoogleFonts.lexend(
+                  color: Colors.white,
+                  letterSpacing: 1,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          spacing: 10,
-          children: [
-            Text('Mood Jar', style: GoogleFonts.lexend()),
-            Icon(Icons.mood),
-          ],
-        ),
+      appBar: MoodAppbar(
+        label: 'Mood Jar',
         actions: [
           IconButton(
             icon: Icon(Icons.history, size: 26),
@@ -66,6 +94,7 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
           ),
         ],
       ),
+      backgroundColor: Color(0xFF328E6E),
       body: Container(
         alignment: Alignment.center,
         child: SingleChildScrollView(
@@ -77,29 +106,39 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                 Text(
                   'How are you feelings today?',
                   style: GoogleFonts.lexend(
-                    textStyle: const TextStyle(fontSize: 40, letterSpacing: .5),
+                    textStyle: const TextStyle(
+                      fontSize: 40,
+                      letterSpacing: .5,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 40),
                 MoodSlider(
+                  color: _moodLabelColor,
                   options: ['Angry', 'Sad', 'Okay', 'Good', 'Great'],
                   onChange: (value) {
                     setState(() {
                       if (value == 0) {
                         _selectedMood = 'Angry';
-                        _moodColor = Colors.red;
+                        _moodColor = Colors.redAccent;
+                        _moodLabelColor = Colors.redAccent;
                       } else if (value == 1) {
                         _selectedMood = 'Sad';
-                        _moodColor = Colors.orangeAccent.shade200;
+                        _moodColor = Colors.orangeAccent.shade100;
+                        _moodLabelColor = Colors.orangeAccent.shade100;
                       } else if (value == 2) {
                         _selectedMood = 'Okay';
-                        _moodColor = Colors.deepPurpleAccent;
+                        _moodColor = Color(0xFF90C67C);
+                        _moodLabelColor = Colors.white;
                       } else if (value == 3) {
                         _selectedMood = 'Good';
-                        _moodColor = Colors.deepPurpleAccent;
+                        _moodColor = Colors.yellow.shade700;
+                        _moodLabelColor = Colors.yellow.shade700;
                       } else if (value == 4) {
                         _selectedMood = 'Great';
-                        _moodColor = Colors.deepPurpleAccent;
+                        _moodColor = Colors.greenAccent;
+                        _moodLabelColor = Colors.greenAccent;
                       } else {
                         _selectedMood = '';
                       }
@@ -107,26 +146,35 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                   },
                 ),
                 const SizedBox(height: 40),
-                MoodTextField(
-                  noteController: _noteController,
-                  labelText:
-                      _selectedMood.isNotEmpty
-                          ? "What made you feel $_selectedMood today?"
-                          : "Select a mood to tell your story",
-                  labelStyle: GoogleFonts.lexend(
-                    textStyle: const TextStyle(fontSize: 25, letterSpacing: .5),
-                    color: _moodColor,
-                  ),
-                  borderColor: _moodColor,
+                Column(
+                  children: [
+                    MoodTextField(
+                      noteController: _noteController,
+                      labelText:
+                          _selectedMood.isNotEmpty
+                              ? "What made you feel $_selectedMood today?"
+                              : "Select a mood to tell your story",
+                      labelStyle: GoogleFonts.lexend(
+                        textStyle: const TextStyle(
+                          fontSize: 25,
+                          letterSpacing: .5,
+                        ),
+                        color: _moodLabelColor,
+                      ),
+                      borderColor: _moodLabelColor,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(
-                      _selectedMood.isNotEmpty ? _moodColor : Colors.grey,
+                      _selectedMood.isNotEmpty ? _moodColor : Colors.white,
                     ),
                     foregroundColor: WidgetStatePropertyAll(
-                      _selectedMood.isNotEmpty ? Colors.white : Colors.white,
+                      _selectedMood.isNotEmpty
+                          ? Colors.white
+                          : Colors.grey.shade500,
                     ),
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
@@ -135,8 +183,8 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                           width: 2.0,
                           color:
                               _selectedMood.isNotEmpty
-                                  ? Colors.lightBlueAccent
-                                  : Colors.grey,
+                                  ? Colors.white
+                                  : Color(0xFFE1EEBC),
                         ),
                       ),
                     ),
@@ -164,8 +212,7 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 50),
-                ViewMoodsButton(),
+                const SizedBox(height: 70),
               ],
             ),
           ),

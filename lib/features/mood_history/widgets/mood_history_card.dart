@@ -12,6 +12,7 @@ class MoodHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Color(0xFFE1EEBC),
       elevation: 3,
       margin: const EdgeInsets.all(8.0),
       child: Padding(
