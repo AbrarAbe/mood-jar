@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/models/mood.dart';
 import 'features/mood_logging/screens/mood_logging_screen.dart';
+import 'features/mood_history/screens/mood_history_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
       title: 'Mood Jar',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blueGrey),
-      home: const MoodLoggingScreen(), // Set MoodLoggingScreen as home!
+      home: const MoodLoggingScreen(),
+      routes: {
+        '/mood_history': (context) => const MoodHistoryScreen(),
+      }, // Set MoodLoggingScreen as home!
     );
   }
 }

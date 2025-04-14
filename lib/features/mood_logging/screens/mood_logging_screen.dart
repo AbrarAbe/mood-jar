@@ -7,6 +7,7 @@ import '../../../core/models/mood.dart';
 
 import '../widgets/mood_slider.dart';
 import '../widgets/mood_textfield.dart';
+import '../widgets/mood_view_button.dart';
 
 class MoodLoggingScreen extends StatefulWidget {
   const MoodLoggingScreen({super.key});
@@ -48,7 +49,23 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mood Jar', style: GoogleFonts.lexend())),
+      appBar: AppBar(
+        title: Row(
+          spacing: 10,
+          children: [
+            Text('Mood Jar', style: GoogleFonts.lexend()),
+            Icon(Icons.mood),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.history, size: 26),
+            onPressed: () {
+              Navigator.pushNamed(context, '/mood_history');
+            },
+          ),
+        ],
+      ),
       body: Container(
         alignment: Alignment.center,
         child: SingleChildScrollView(
@@ -133,14 +150,22 @@ class _MoodLoggingScreenState extends State<MoodLoggingScreen> {
                             _saveMoodToHive(_selectedMood);
                           }
                           : null,
-                  child: Text(
-                    'Save Mood',
-                    style: GoogleFonts.lexend(
-                      textStyle: const TextStyle(fontSize: 18),
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 10,
+                    children: [
+                      Text(
+                        'Save Mood',
+                        style: GoogleFonts.lexend(
+                          textStyle: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Icon(Icons.save_alt, size: 22),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 50),
+                ViewMoodsButton(),
               ],
             ),
           ),
